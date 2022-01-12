@@ -1,0 +1,25 @@
+{
+    "name": "Focus Zoo",
+    "description": "Be productive while unlocking a cute collection of animals! Earn points to expand your collection by following the Pomodoro method.",
+    "version": "1.0",
+    "manifest_version": 3,
+    "action": {
+        "default_popup": "popup.html"
+    },
+    "host_permissions": [
+      "<all_urls",
+      "http://*/*", "https://*/*"
+    ],
+    "permissions": [
+      "activeTab",
+      "tabs",
+      "storage",
+      "idle",
+      "<all_urls>",
+      "scripting"
+    ],
+    "background": {
+      "service_worker": "background.js"
+    }
+  }
+  
