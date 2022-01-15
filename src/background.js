@@ -3,8 +3,9 @@ var totalSessionTime = 0;
 var pomodoroInterval;
 var popupPort;
 var buttonMode = "Start";
-var timerMode = "Work";
+var timerMode = "Stop";
 var blocked = ["www.youtube.com"];
+var visitedBlocked = false;
 
 
 /* TODO:
@@ -12,7 +13,7 @@ var blocked = ["www.youtube.com"];
 - Options page
 */
 chrome.runtime.onInstalled.addListener(function(details) {
-  chrome.idle.setDetectionInterval(5*60);
+  chrome.idle.setDetectionInterval(60*5);
   if (details.reason == "install") {
     chrome.storage.sync.set({"points": 0}, function() {
       console.log("New points");
@@ -30,23 +31,39 @@ chrome.runtime.onInstalled.addListener(function(details) {
   }
   // Blocked sites
   if (details.reason == "update") {
-    chrome.tabs.query({}, function(tabs) {
-      for (const tab of tabs) {
-        var domain = getDomain(tab);
-        if (blocked.includes(domain)) console.log("NOOO")
-      }
-    })
+    if (timerMode == "Work") {
+      chrome.tabs.query({}, function(tabs) {
+        for (const tab of tabs) {
+          var domain = getDomain(tab);
+          if (blocked.includes(domain)) {
+            chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+              chrome.tabs.sendMessage(tabs[0].id, {msg: "BLOCKED_SITE"});
+            })
+          }
+        }
+      })
+    }
   }
 })
-// Blocked sites
-chrome.tabs.onCreated.addListener(function(tab) {     
-  var domain = getDomain(tab);
-  if (blocked.includes(domain)) console.log("NOOO")
-})
-chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
-  var domain = getDomain(tab);
-  if (blocked.includes(domain)) console.log("NOOO")
-})
+chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
+  if (changeInfo.status === 'complete' && tab.url.includes('http')) {
+      chrome.scripting.executeScript({target: {tabId: tabId}, files: ['./inject_foreground.js']}, function () {
+          chrome.scripting.executeScript({target: {tabId: tabId}, files: ['./foreground.bundle.js']}, function () {
+              console.log('INJECTED AND EXECUTED');
+              var domain = getDomain(tab);
+              if (tab.url != undefined && changeInfo.status == "complete" && blocked.includes(domain) && !visitedBlocked && timerMode == "Work") { 
+                chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+                  chrome.tabs.sendMessage(tabs[0].id, {msg: "BLOCKED_SITE"});
+                  console.log("New tab blocked site")
+                  visitedBlocked = true;
+                })
+              }
+          });
+      });
+  }
+});
+
+
 chrome.runtime.onStartup.addListener(function() {
   console.log("Started!");
   chrome.storage.sync.set({"time":0});
@@ -54,19 +71,23 @@ chrome.runtime.onStartup.addListener(function() {
 })
 // If state becomes idle, reset the Pomodoro
 chrome.idle.onStateChanged.addListener(function(state) {
-  if (state == "idle") {
+  if (state == "idle" && timerMode == "Work") {
     console.log("Reset");
+    chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+      chrome.tabs.sendMessage(tabs[0].id, {msg: "IDLE"});
+    })
     clearInterval(pomodoroInterval);
     buttonMode = "Start"
     currentPomodoro = 1500;
     totalSessionTime = 0;
     timerMode = "Work;"
     popupPort.postMessage({countdown: "00:25:00", totalTime: "00:00:00", mode: buttonMode, timerMode: timerMode})
+    
   }
 })
-chrome.storage.onChanged.addListener(function(changes, areaName) {
-  console.log((changes))
-})
+// chrome.storage.onChanged.addListener(function(changes, areaName) {
+//   console.log((changes))
+// })
 // Connection for communication of buttons and time changes
 chrome.runtime.onConnect.addListener(function(port) {
   popupPort = port;
@@ -74,12 +95,14 @@ chrome.runtime.onConnect.addListener(function(port) {
     if (msg.cmd == "START_TIMER") {
       currentPomodoro = 1500;
       totalSessionTime = 0;
+      timerMode = "Work";
       buttonMode = "End";
       popupPort.postMessage({countdown: "00:25:00", totalTime: "00:00:00", mode: buttonMode, timerMode: timerMode})
       pomodoroInterval = setInterval(incrementTimer, 1000);
     }
     if (msg.cmd == "STOP_TIMER") {
       clearInterval(pomodoroInterval)
+      timerMode = "Stop"
       buttonMode = "Start";
     }
     if (msg.cmd == "GET_TIMES") {
@@ -124,16 +147,17 @@ const incrementTimer = () => {
       popupPort.postMessage({countdown: "00:25:00", timerMode: timerMode});
     }
   }
+  if (currentPomodoro == 60) {
+    chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+      if (timerMode == "Work") {
+        chrome.tabs.sendMessage(tabs[0].id, {msg: "BREAK_SOON"})
+      }
+      if (timerMode == "Break") {
+        chrome.tabs.sendMessage(tabs[0].id, {msg: "WORK_SOON"})
+      }
+    })
+  }
 }
-// chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
-//   if (changeInfo.status === 'complete' && tab.url.includes('http')) {
-//       chrome.scripting.executeScript({target: {tabId: tabId}, files: ['./inject_foreground.js']}, function () {
-//           chrome.scripting.executeScript({target: {tabId: tabId}, files: ['./foreground.bundle.js']}, function () {
-//               console.log('INJECTED AND EXECUTED');
-//           });
-//       });
-//   }
-// });
 const secToTimer = (timeMetric) => {
   var hours = Math.floor((timeMetric % (60 * 60 * 24))/(60 * 60));
   var minutes = Math.floor((timeMetric % (60 * 60)) / (60));

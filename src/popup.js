@@ -49,38 +49,26 @@ function Popup() {
     if (msg.timerMode != undefined) {
       setTimerMode(msg.timerMode)
     }
-    if (msg.alert != undefined) {
-      if (msg.alert == "break") {
-        chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-          var currentTab = tabs[0];
-          chrome.tabs.executeScript({tabId: currentTab.id}, function() {
-            console.log("asf")
-            window.alert("eafasd")
-          })
-        })
-        return true;
-      }
-    }
+  
     return true;
     // console.log(msg.points);
   })
   return (
-    <div id="popup">
-      <div id="header">
-          <div id="header-name">Focus Zoo</div>
-          <div id="header-points">{points}</div>
+    <div id="popup" className="flex flex-col mx-2 mt-1 font-sans shrink-0 grow-0">
+      <div id="header" className="flex flex-row justify-between font-medium text-base">
+          <div id="header-name" className="">FOCUS ZOO</div>
+          <div id="header-points" className="">{points}</div>
       </div>
-      <div id="popup-image">
+      <div id="popup-image" className="flex self-center mt-5">
         <img id="popup-img" src={chrome.runtime.getURL('placeholder.png')}></img>
       </div>
-      <div id="popup-mode">{timerMode}</div>
-      <div id="countdown-timer">{countdown}</div>
-      <div id="popup-footer">
-        <div id="start-end-button" className="footer-item" onClick={() => toggleTimer()}>{button}</div>
-        {/* <div></div> */}
-        <div id="total-timer" className="footer-item">{sessionTime}</div>
+      <div id="popup-mode" className="italic self-center mt-1">{timerMode}</div>
+      <div id="countdown-timer" className="self-center text-4xl">{countdown}</div>
+      <div id="popup-footer" className="flex flex-row justify-evenly self-center w-full text-xl mt-2 shrink-0 grow-0 resize-none">
+        <div id="start-end-button" className="flex footer-item w-20 py-2 px-4 border border-black border-solid justify-center hover:cursor-pointer hover:bg-blue-50 align-middle" onClick={() => toggleTimer()}>{button}</div>
+        <div id="total-timer" className="footer-item py-2 px-4 border border-black border-solid">{sessionTime}</div>
       </div>
     </div>
   );
 }
-render(<Popup />, document.getElementById("popup"));
+render(<Popup />, document.getElementById("popup-comp"));

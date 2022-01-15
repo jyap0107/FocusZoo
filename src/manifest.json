@@ -6,12 +6,16 @@
     "action": {
         "default_popup": "popup.html"
     },
+    "options_page": "./options.html",
+    "host_permissions": [
+      "http://*/*",
+      "https://*/*",
+      "<all_urls>"
+    ],
     "permissions": [
       "tabs",
       "storage",
       "idle",
-      "http://*/*", "https://*/*",
-      "<all_urls>",
       "scripting"
     ],
     "background": {

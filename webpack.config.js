@@ -8,6 +8,7 @@ module.exports = {
   entry: {
       popup: './src/popup.js',
       foreground: './src/foreground.js',
+      options: './src/components/Options.js'
       // Add other files if they exist
   },
   output: {
@@ -30,14 +31,16 @@ module.exports = {
             presets: ['@babel/preset-env', '@babel/preset-react'],
         }
       }
-    }, {
+    },
+    {
       test: /\.s?css$/,
       use: [
         MiniCssExtractPlugin.loader,
         {
           loader: 'css-loader',
           options: {sourceMap: true}
-        }
+        },
+        'postcss-loader',
       ]
     }
   ],
@@ -49,12 +52,12 @@ module.exports = {
       filename: 'popup.html',
     }),
     new HtmlWebpackPlugin({
-      template: './src/alert.html',
-      filename: 'alert.html',
-    }),
-    new HtmlWebpackPlugin({
       template: './src/foreground.html',
       filename: 'foreground.html',
+    }),
+    new HtmlWebpackPlugin({
+      template: './src/options.html',
+      filename: 'options.html',
     }),
     new CopyPlugin({
       patterns: [
@@ -65,11 +68,8 @@ module.exports = {
       ],
     }),
     new MiniCssExtractPlugin({
-      filename: "popup.css"
+      filename: "[name].css",
     }),
-    new MiniCssExtractPlugin({
-      filename: "options-collection.css"
-    })
   ],
   // mode: '',
   // Send an object and resultant name

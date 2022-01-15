@@ -1,4 +1,9 @@
-#popup {
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+/* #popup {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -18,7 +23,7 @@
   align-items: flex-start;
 }
 #header-points {
-  /* align-items: flex-end; */
+  align-items: flex-end;
   margin-left: auto;
 }
 #popup-image {
@@ -60,4 +65,4 @@
   padding-left: 30px;
   padding-right: 30px;
   flex-basis: 15%;
-}
+} */
