@@ -4,23 +4,35 @@ import Navbar from "./Navbar.js"
 import Avatar from "./Avatar.js"
 import Logo from "./Logo.js"
 import Settings from "./Settings.js"
+import About from "./About.js"
+import OptionsRouting from "./OptionsRouting.js"
+import Collection from "./Collection.js"
+import {
+  MemoryRouter,
+  HashRouter,
+  Routes,
+  Route,
+  Outlet,
+  Navigate,
+} from "react-router-dom";
+
 import '../options.css'
+import '@themesberg/flowbite';
 
 
 function Options() {
   return (
-    <div id="options-comp" className="flex flex-row">
-      <div id="sidebar" className="flex flex-col bg-stone-50 min-h-screen max-h-screen w-52 xl:w-72 divide-solid divide-y divide-slate-200 drop-shadow-lg">
-      <Logo></Logo>
-      <Navbar></Navbar>
-      </div>
-      <div id="screen" className="flex w-full bg-stone justify-center content-center ">
-        <Settings></Settings>
-      </div>
-    </div>
-    
-    
+    <HashRouter>
+      <Routes>
+        <Route path="/" element={<OptionsRouting></OptionsRouting>}>
+          {/* <div id="screen" className="flex w-full bg-stone justify-center content-center "> */}
+            <Route path="blocksites" element={<Settings className="flex w-full bg-stone justify-center content-center "></Settings>}></Route>
+            <Route path="about" element={<About className="flex w-full bg-stone justify-center content-center "></About>}></Route>
+            <Route path="collection" element={<Collection className="flex w-full bg-stone justify-center content-center "></Collection>}></Route>
+          {/* </div> */}
+        </Route>
+      </Routes>
+    </HashRouter>
   );
-
 }
 render(<Options />, document.querySelector("#options"));

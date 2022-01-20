@@ -4,14 +4,13 @@ var pomodoroInterval;
 var popupPort;
 var buttonMode = "Start";
 var timerMode = "Stop";
-var blocked = ["www.youtube.com"];
+
+var blocked = [];
+chrome.storage.sync.get("blocked", (data) => {
+  blocked = data.blocked;
+})
 var visitedBlocked = false;
 
-
-/* TODO:
-- Alerts with content script when: idle, break soon, start soon, blocked site.
-- Options page
-*/
 chrome.runtime.onInstalled.addListener(function(details) {
   chrome.idle.setDetectionInterval(60*5);
   if (details.reason == "install") {
@@ -38,11 +37,23 @@ chrome.runtime.onInstalled.addListener(function(details) {
           if (blocked.includes(domain)) {
             chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
               chrome.tabs.sendMessage(tabs[0].id, {msg: "BLOCKED_SITE"});
+              visitedBlocked = true;
             })
           }
         }
       })
     }
+  }
+})
+chrome.tabs.query({}, function(tabs) {
+  for (var i = 0; i < tabs.length; i++) {
+    var tabId = tabs[i].id;
+    chrome.scripting.executeScript({target: {tabId: tabId}, files: ['./inject_foreground.js']}, function () {
+      chrome.scripting.executeScript({target: {tabId: tabId}, files: ['./foreground.bundle.js']}, function () {
+          console.log('INJECTED AND EXECUTED');
+          
+      });
+  });
   }
 })
 chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
@@ -54,7 +65,6 @@ chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
               if (tab.url != undefined && changeInfo.status == "complete" && blocked.includes(domain) && !visitedBlocked && timerMode == "Work") { 
                 chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
                   chrome.tabs.sendMessage(tabs[0].id, {msg: "BLOCKED_SITE"});
-                  console.log("New tab blocked site")
                   visitedBlocked = true;
                 })
               }
@@ -62,6 +72,7 @@ chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
       });
   }
 });
+
 
 
 chrome.runtime.onStartup.addListener(function() {
@@ -81,8 +92,8 @@ chrome.idle.onStateChanged.addListener(function(state) {
     currentPomodoro = 1500;
     totalSessionTime = 0;
     timerMode = "Work;"
+    visitedBlocked = false;
     popupPort.postMessage({countdown: "00:25:00", totalTime: "00:00:00", mode: buttonMode, timerMode: timerMode})
-    
   }
 })
 // chrome.storage.onChanged.addListener(function(changes, areaName) {
@@ -90,7 +101,7 @@ chrome.idle.onStateChanged.addListener(function(state) {
 // })
 // Connection for communication of buttons and time changes
 chrome.runtime.onConnect.addListener(function(port) {
-  popupPort = port;
+  if (port.name == "popup") popupPort = port;
   port.onMessage.addListener(function(msg) {
     if (msg.cmd == "START_TIMER") {
       currentPomodoro = 1500;
@@ -99,11 +110,26 @@ chrome.runtime.onConnect.addListener(function(port) {
       buttonMode = "End";
       popupPort.postMessage({countdown: "00:25:00", totalTime: "00:00:00", mode: buttonMode, timerMode: timerMode})
       pomodoroInterval = setInterval(incrementTimer, 1000);
+      chrome.tabs.query({}, function(tabs) {
+        for (const tab of tabs) {
+          var domain = getDomain(tab);
+          if (blocked.includes(domain)) {
+            console.log(domain)
+            chrome.tabs.query({active: true, currentWindow: true}, function(tabs2) {
+              console.log(tabs2[0].id)
+              chrome.tabs.sendMessage(tabs2[0].id, {msg: "BLOCKED_SITE"});
+              clearInterval(pomodoroInterval);
+              visitedBlocked = true;
+            })
+          }
+        }
+      })
     }
     if (msg.cmd == "STOP_TIMER") {
       clearInterval(pomodoroInterval)
       timerMode = "Stop"
       buttonMode = "Start";
+      visitedBlocked = false;
     }
     if (msg.cmd == "GET_TIMES") {
       var countdownTimer = secToTimer(currentPomodoro);
@@ -113,6 +139,10 @@ chrome.runtime.onConnect.addListener(function(port) {
     if (msg.cmd == "GET_MODE") {
       popupPort.postMessage({mode: buttonMode});
     }
+  })
+  port.onDisconnect.addListener(function() {
+    console.log("DIOSONENCTIO")
+    return true;
   })
 })
 const getDomain = (tab) => {
@@ -127,13 +157,14 @@ const incrementTimer = () => {
   var pts = 0;
   if (currentPomodoro % 5 == 0) pts = 10;
   chrome.storage.sync.get("points", (data) => {
-    var total = data.points + pts
-    chrome.storage.sync.set({"points": total});
+    // if (!visitedBlocked) {
+      var total = data.points + pts
+      chrome.storage.sync.set({"points": total});
+    // }
     var countdownTimer = secToTimer(currentPomodoro);
     var sessionTimer = secToTimer(totalSessionTime);
     popupPort.postMessage({countdown: countdownTimer, totalTime: sessionTimer, points: total})
   })
-  // console.log(currentPomodoro)
  
   if (currentPomodoro <= 0) {
     if (timerMode == "Work") {

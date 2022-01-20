@@ -15,7 +15,7 @@ function Foreground() {
         alert("You've been idle for too long. You will stop receiving points until you click STOP.")
       }
       if (request.msg == "BLOCKED_SITE") {
-        alert("You're accessing a blocked site. You will stop receiving points until you click STOP.")
+        alert(`You're accessing a blocked site. You will stop receiving points until you click STOP.`)
       }
     })
   return (
