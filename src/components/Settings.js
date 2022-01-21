@@ -18,10 +18,14 @@ function Settings() {
     })
   },[])
 
+  // useEffect(() => console.log(workTime), [workTime]);
+
   const handleWorkTime = (e) => {
-    console.log("blurred")
+    // console.log("blurred")
     var work = e.target.value;
-    work = work > 120 ? 120 : work
+    work = work > 120 ? 120 : work;
+    work = work < 25 ? 25 : work;
+    e.target.value = work
     setWorkTime(work)
     chrome.storage.sync.set({"workTime": work})
   }
