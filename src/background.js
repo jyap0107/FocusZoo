@@ -29,6 +29,8 @@ chrome.runtime.onInstalled.addListener(function(details) {
     })
     chrome.storage.sync.set({"current-tabs":[]});
     chrome.storage.sync.set({"defaultBlocked":false})
+    chrome.storage.sync.set({"workTime":25})
+    chrome.storage.sync.set({"breakTime":5})
   }
   // Blocked sites
   if (details.reason == "update") {

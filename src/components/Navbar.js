@@ -1,10 +1,12 @@
 import React, {useState, useEffect} from "react";
 import { render } from "react-dom";
 import '../options.css'
+
 import CollectionsIcon from '@mui/icons-material/Collections';
 import SettingsIcon from '@mui/icons-material/Settings';
 import BarChartIcon from '@mui/icons-material/BarChart';
 import InfoIcon from '@mui/icons-material/Info';
+import DoNotDisturbIcon from '@mui/icons-material/DoNotDisturb';
 import {
   BrowserRouter as Router,
   Switch,
@@ -50,12 +52,19 @@ function Navbar() {
           <span>Block Sites</span>
           </div>
         </Link>
+        <Link to="settings" className="flex py-3 mt-2 w-11/12 hover:cursor-pointer hover:bg-stone-200 rounded-lg">
+          <div className="ml-2 flex items-center flex-wrap">
+            <DoNotDisturbIcon className=" mr-1.5 mt-0.5"></DoNotDisturbIcon>
+            <span> Settings</span>
+          </div>
+        </Link>
         <Link to="about" className="flex py-3 mt-2 w-11/12 hover:cursor-pointer hover:bg-stone-200 rounded-lg">
           <div className="ml-2 flex items-center flex-wrap">
             <InfoIcon className=" mr-1.5 mt-0.5"></InfoIcon>
             <span> About</span>
           </div>
         </Link>
+        
         <div className="mt-auto py-3 ">Stars: {points}</div>
       </div>
   )

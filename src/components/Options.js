@@ -7,6 +7,7 @@ import BlockedPage from "./BlockedPage.js"
 import About from "./About.js"
 import OptionsRouting from "./OptionsRouting.js"
 import Collection from "./Collection.js"
+import Settings from "./Settings.js"
 import {
   MemoryRouter,
   HashRouter,
@@ -29,6 +30,7 @@ function Options() {
             <Route path="blocksites" element={<BlockedPage className="flex w-full bg-stone justify-center content-center "></BlockedPage>}></Route>
             <Route path="about" element={<About className="flex w-full bg-stone justify-center content-center "></About>}></Route>
             <Route path="collection" element={<Collection className="flex w-full bg-stone justify-center content-center "></Collection>}></Route>
+            <Route path="settings" element={<Settings className="flex w-full bg-stone justify-center content-center "></Settings>}></Route>
           {/* </div> */}
         </Route>
       </Routes>
