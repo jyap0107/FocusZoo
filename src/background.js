@@ -3,6 +3,7 @@ var totalSessionTime = 0;
 var pomodoroInterval;
 var popupPort;
 var navbarPort;
+var settingsPort;
 var buttonMode = "Start";
 var timerMode = "Stop";
 
@@ -29,8 +30,9 @@ chrome.runtime.onInstalled.addListener(function(details) {
     })
     chrome.storage.sync.set({"current-tabs":[]});
     chrome.storage.sync.set({"defaultBlocked":false})
-    chrome.storage.sync.set({"workTime":25})
+    chrome.storage.sync.set({"workTime":30})
     chrome.storage.sync.set({"breakTime":5})
+    chrome.storage.sync.set({"blockAlert":false})
   }
   // Blocked sites
   if (details.reason == "update") {
@@ -97,7 +99,13 @@ chrome.idle.onStateChanged.addListener(function(state) {
     totalSessionTime = 0;
     timerMode = "Work;"
     visitedBlocked = false;
-    popupPort.postMessage({countdown: "00:25:00", totalTime: "00:00:00", mode: buttonMode, timerMode: timerMode})
+    chrome.storage.sync.get("workTime", function(data) {
+      var work = data.workTime
+      currentPomodoro = 60 * work;
+      var countdown = secToTimer(work * 60)
+      popupPort.postMessage({countdown: countdown, totalTime: "00:00:00", mode: buttonMode, timerMode: timerMode})
+    })
+    
   }
 })
 // chrome.storage.onChanged.addListener(function(changes, areaName) {
@@ -107,39 +115,54 @@ chrome.idle.onStateChanged.addListener(function(state) {
 chrome.runtime.onConnect.addListener(function(port) {
   if (port.name == "popup") popupPort = port;
   if (port.name == "navbar") navbarPort = port;
+  if (port.name == "settings") settingsPort = port;
   popupPort.onMessage.addListener(function(msg) {
     if (msg.cmd == "START_TIMER") {
-      currentPomodoro = 1500;
       totalSessionTime = 0;
       timerMode = "Work";
       buttonMode = "End";
-      popupPort.postMessage({countdown: "00:25:00", totalTime: "00:00:00", mode: buttonMode, timerMode: timerMode})
-      pomodoroInterval = setInterval(incrementTimer, 1000);
-      chrome.tabs.query({}, function(tabs) {
-        for (const tab of tabs) {
-          var domain = getDomain(tab);
-          if (blocked.includes(domain)) {
-            console.log(domain)
-            chrome.tabs.query({active: true, currentWindow: true}, function(tabs2) {
-              console.log(tabs2[0].id)
-              chrome.tabs.sendMessage(tabs2[0].id, {msg: "BLOCKED_SITE"});
-              clearInterval(pomodoroInterval);
-              visitedBlocked = true;
-            })
+      chrome.storage.sync.get(["workTime", "breakTime"], function(data) {
+        var work = data.workTime
+        currentPomodoro = 60 * work;
+        // var countdown = work / 60 >= 1 ? "0" + work/60 : "00";
+        // countdown += ":";
+        // work = work % 60
+        // countdown = work >= 10 ? countdown + work + ":00" : countdown + "0" + work + ":00"
+        var countdown = secToTimer(work * 60)
+        popupPort.postMessage({countdown: countdown, totalTime: "00:00:00", mode: buttonMode, timerMode: timerMode})
+        pomodoroInterval = setInterval(incrementTimer, 1000);
+        settingsPort.postMessage({active: true})
+        chrome.tabs.query({}, function(tabs) {
+          for (const tab of tabs) {
+            var domain = getDomain(tab);
+            if (blocked.includes(domain)) {
+              console.log(domain)
+              chrome.tabs.query({active: true, currentWindow: true}, function(tabs2) {
+                console.log(tabs2[0].id)
+                chrome.tabs.sendMessage(tabs2[0].id, {msg: "BLOCKED_SITE"});
+                clearInterval(pomodoroInterval);
+                visitedBlocked = true;
+                settingsPort.postMessage({active: false})
+              })
+            }
           }
-        }
+        })
       })
+      // cleanup disconnect ports so you dont send msgs to disconnected ports
     }
     if (msg.cmd == "STOP_TIMER") {
       clearInterval(pomodoroInterval)
       timerMode = "Stop"
       buttonMode = "Start";
       visitedBlocked = false;
+      settingsPort.postMessage({active: false})
     }
     if (msg.cmd == "GET_TIMES") {
-      var countdownTimer = secToTimer(currentPomodoro);
-      var sessionTimer = secToTimer(totalSessionTime);
-      popupPort.postMessage({countdown: countdownTimer, totalTime: sessionTimer, timerMode: timerMode})
+      chrome.storage.sync.get("workTime", function(data) {
+        var countdownTimer = secToTimer(data.workTime * 60)
+        var sessionTimer = secToTimer(totalSessionTime);
+        popupPort.postMessage({countdown: countdownTimer, totalTime: sessionTimer, timerMode: timerMode})
+      })
     }
     if (msg.cmd == "GET_MODE") {
       popupPort.postMessage({mode: buttonMode});
@@ -169,20 +192,26 @@ const incrementTimer = () => {
     var countdownTimer = secToTimer(currentPomodoro);
     var sessionTimer = secToTimer(totalSessionTime);
     popupPort.postMessage({countdown: countdownTimer, totalTime: sessionTimer, points: total})
-    navbarPort.postMessage({points: total})
+    if (navbarPort != undefined) navbarPort.postMessage({points: total})
   })
  
   if (currentPomodoro <= 0) {
-    if (timerMode == "Work") {
-      timerMode = "Break";
-      currentPomodoro = 300;
-      popupPort.postMessage({countdown: "00:05:00", timerMode: timerMode});
-    }
-    else if (timerMode == "Break") {
-      timerMode = "Work";
-      currentPomodoro = 1500;
-      popupPort.postMessage({countdown: "00:25:00", timerMode: timerMode});
-    }
+    chrome.storage.sync.get(["workTime", "breakTime"], function(data) {
+      if (timerMode == "Work") {
+        var brk = data.breakTime
+        timerMode = "Break";
+        currentPomodoro = brk * 60;
+        var countdown = secToTimer(brk * 60)
+        popupPort.postMessage({countdown: countdown, timerMode: timerMode});
+      }
+      else if (timerMode == "Break") {
+        var work = data.workTime;
+        timerMode = "Work";
+        currentPomodoro = 60 * work;
+        var countdown = secToTimer(work * 60)
+        popupPort.postMessage({countdown: countdown, timerMode: timerMode});
+      }
+    })
   }
   if (currentPomodoro == 60) {
     chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
