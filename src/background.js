@@ -2,6 +2,7 @@ var currentPomodoro = 1500;
 var totalSessionTime = 0;
 var pomodoroInterval;
 var popupPort;
+var navbarPort;
 var buttonMode = "Start";
 var timerMode = "Stop";
 
@@ -27,6 +28,7 @@ chrome.runtime.onInstalled.addListener(function(details) {
       console.log("New blocked");
     })
     chrome.storage.sync.set({"current-tabs":[]});
+    chrome.storage.sync.set({"defaultBlocked":false})
   }
   // Blocked sites
   if (details.reason == "update") {
@@ -102,7 +104,8 @@ chrome.idle.onStateChanged.addListener(function(state) {
 // Connection for communication of buttons and time changes
 chrome.runtime.onConnect.addListener(function(port) {
   if (port.name == "popup") popupPort = port;
-  port.onMessage.addListener(function(msg) {
+  if (port.name == "navbar") navbarPort = port;
+  popupPort.onMessage.addListener(function(msg) {
     if (msg.cmd == "START_TIMER") {
       currentPomodoro = 1500;
       totalSessionTime = 0;
@@ -164,6 +167,7 @@ const incrementTimer = () => {
     var countdownTimer = secToTimer(currentPomodoro);
     var sessionTimer = secToTimer(totalSessionTime);
     popupPort.postMessage({countdown: countdownTimer, totalTime: sessionTimer, points: total})
+    navbarPort.postMessage({points: total})
   })
  
   if (currentPomodoro <= 0) {

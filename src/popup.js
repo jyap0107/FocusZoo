@@ -4,9 +4,9 @@ import './popup.css';
 // import image from '../public/placeholder.png';
 
 
-var port = chrome.runtime.connect({name: "popup"});
-function Popup() {
 
+function Popup() {
+  var port = chrome.runtime.connect({name: "popup"});
   var total;
   chrome.storage.sync.get("points", (data) => {
     total = data.points;

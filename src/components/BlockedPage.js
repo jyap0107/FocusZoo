@@ -16,11 +16,15 @@ function BlockedPage() {
   const [blocked, setBlocked] = useState([]);
   const [input, setInput] = useState([]);
   const [enabled, setEnabled] = useState(false)
-  const defaultBlocked = ["www.instagram.com", "www.facebook.com", "www.tiktok.com", "www.reddit.com", "www.youtube.com", "www.twitter.com", "www.amazon.com", "www.netflix.com"]
+  const defaultBlocked = ["www.instagram.com", "www.facebook.com", "www.tiktok.com", "www.reddit.com", "www.youtube.com", "www.twitter.com", "www.amazon.com", "www.netflix.com", "www.twitch.tv"]
 
   useEffect(() => {
     chrome.storage.sync.get("blocked", (data) => {
       setBlocked(data.blocked)
+    })
+    chrome.storage.sync.get("defaultBlocked", (data) => {
+      console.log(data);
+      setEnabled(data.defaultBlocked);
     })
   },[])
 
@@ -66,6 +70,10 @@ function BlockedPage() {
         chrome.storage.sync.set({"blocked":storageBlocked})
         setBlocked(blocked.filter(site => site !== siteToRemove))
       }
+      if (defaultBlocked.includes(siteToRemove)) {
+        chrome.storage.sync.set({"defaultBlocked":false})
+        setEnabled(false)
+      }
     })
   }
   const handleEnterKey = (e) => {
@@ -75,16 +83,41 @@ function BlockedPage() {
   const getDomain = (url) => {
     var matches = url.match(/^https?\:\/\/([^\/?#]+)(?:[\/?#]|$)/i);
     var domain = matches && matches[1];
-    console.log(domain)
+    console.log(domain);
     return domain;
   }
-  const addDefaultBlocked = () => {
+  const toggleDefaultBlocked = () => {
+    console.log("toggled")
+    if (enabled) {
+      chrome.storage.sync.set({"defaultBlocked":false})
+      chrome.storage.sync.get("blocked", data => {
+        var storageBlocked = data.blocked;
+        storageBlocked = storageBlocked.filter((el) => !defaultBlocked.includes(el))
+        setBlocked(storageBlocked)
+        chrome.storage.sync.set({"blocked": storageBlocked})
+      })
+    }
+    else {
+      chrome.storage.sync.set({"defaultBlocked":true})
+      chrome.storage.sync.get("blocked", data => {
+        var storageBlocked = data.blocked;
+        for (var i = 0; i < defaultBlocked.length; i++) {
+          if (storageBlocked.includes(defaultBlocked[i]) == false) {
+            storageBlocked.push(defaultBlocked[i])
+            console.log(defaultBlocked[i])
+          }
+        }
+        setBlocked(storageBlocked)
+        chrome.storage.sync.set({"blocked": storageBlocked})
+      })
+    }
     
+    setEnabled(!enabled);
   }
 
 
 
-  const listItems = blocked.map((site, index) => <div id={index} key={index} className="flex flex-row justify-between py-3 pl-3">{site}
+  const listItems = blocked.map((site, index) => <div id={index} key={index} className="flex flex-row justify-between py-3 pl-3 transition-opacity duration-700 ease-in">{site}
   <DeleteOutlineIcon className="mr-3 rounded hover:bg-slate-300 hover:cursor-pointer" onClick={() => deleteSite(site)}>
     </DeleteOutlineIcon></div>)
 
@@ -104,7 +137,7 @@ function BlockedPage() {
               <Switch.Label className="mr-3">Autoblock</Switch.Label>
               <Switch
                 checked={enabled}
-                onChange={setEnabled}
+                onChange={() => toggleDefaultBlocked()}
                 className={`${
                 enabled ? 'bg-blue-300' : 'bg-gray-200'
                   }  relative inline-flex items-center h-6 rounded-full w-11 transition-colors`}>
@@ -115,9 +148,9 @@ function BlockedPage() {
              </div>
           </Switch.Group>
 
-          <div id="tooltip" role="tooltip" class="inline-block absolute invisible z-10 py-2 px-3 text-xs font-sm text-white bg-slate-700 rounded-lg shadow-sm opacity-0 transition-opacity duration-300 tooltip dark:bg-gray-700">
+          <div id="tooltip" role="tooltip" className="inline-block absolute z-10 py-2 px-3 text-xs font-sm text-white bg-slate-700 rounded-lg shadow-sm opacity-0 transition-opacity duration-300 tooltip dark:bg-gray-700">
     Automatically blocks popular social media. While enabled, earn double the points
-            <div class="tooltip-arrow" data-popper-arrow></div>
+            <div className="tooltip-arrow" data-popper-arrow></div>
           </div>
         </div>
 
@@ -131,7 +164,7 @@ function BlockedPage() {
           onInput={e => setInput(e.target.value)} onKeyDown={e => handleEnterKey(e)}></input>
         </div>
 
-        {blocked.length != 0 ? <div id="block-list" className="flex-1 flex-col divide-solid divide-y divide-slate-200 border border-slate-500 border-solid mt-5 rounded font-sans font-medium text-base overflow-y-scroll bg-blue-300 ">
+        {blocked.length != 0 ? <div id="block-list" className="flex-1 flex-col divide-solid divide-y divide-slate-200 border border-slate-500 border-solid mt-5 rounded font-sans font-medium text-base overflow-y-scroll transition-opacity duration-700 ease-in ">
           {listItems}
           </div> : <></>}
         </div>
