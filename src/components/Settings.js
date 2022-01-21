@@ -23,7 +23,9 @@ function Settings() {
     chrome.storage.sync.get("blockAlert", (data) => {
       setEnabled(data.blockAlert)
     })
+    port.postMessage({cmd: "GET_ACTIVE"});
   },[])
+
 
   const handleWorkTime = (e) => {
     var work = e.target.value;
@@ -47,6 +49,7 @@ function Settings() {
     chrome.storage.sync.set({"blockAlert": temp})
   }
   port.onMessage.addListener(function(msg) {
+    console.log(msg.active)
     if (msg.active != undefined) {
       setActive(msg.active)
     }

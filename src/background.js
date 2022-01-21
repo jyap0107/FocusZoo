@@ -95,7 +95,6 @@ chrome.idle.onStateChanged.addListener(function(state) {
     })
     clearInterval(pomodoroInterval);
     buttonMode = "Start"
-    currentPomodoro = 1500;
     totalSessionTime = 0;
     timerMode = "Work;"
     visitedBlocked = false;
@@ -117,6 +116,7 @@ chrome.runtime.onConnect.addListener(function(port) {
   if (port.name == "navbar") navbarPort = port;
   if (port.name == "settings") settingsPort = port;
   popupPort.onMessage.addListener(function(msg) {
+    console.log("Started")
     if (msg.cmd == "START_TIMER") {
       totalSessionTime = 0;
       timerMode = "Work";
@@ -159,13 +159,21 @@ chrome.runtime.onConnect.addListener(function(port) {
     }
     if (msg.cmd == "GET_TIMES") {
       chrome.storage.sync.get("workTime", function(data) {
-        var countdownTimer = secToTimer(data.workTime * 60)
+  
+        var countdownTimer = buttonMode == "Start" ? secToTimer(data.workTime * 60) : secToTimer(currentPomodoro)
         var sessionTimer = secToTimer(totalSessionTime);
         popupPort.postMessage({countdown: countdownTimer, totalTime: sessionTimer, timerMode: timerMode})
       })
     }
     if (msg.cmd == "GET_MODE") {
       popupPort.postMessage({mode: buttonMode});
+    }
+  })
+  settingsPort.onMessage.addListener(function(msg) {
+    if (msg.cmd == "GET_ACTIVE") {
+      var active = buttonMode == "End" ? true : false;
+      console.log("received active")
+      settingsPort.postMessage({active: active})
     }
   })
   port.onDisconnect.addListener(function() {

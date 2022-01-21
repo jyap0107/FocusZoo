@@ -37,7 +37,7 @@ function Popup() {
   }
   port.onMessage.addListener(function(msg) {
     if (msg.countdown != undefined) {
-      console.log(msg.countdown)
+      console.log("Countdown received " + msg.countdown)
       setCountdown(msg.countdown);
     }
     if (msg.points != undefined)
