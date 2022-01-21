@@ -3,7 +3,7 @@ import { render } from "react-dom";
 import Navbar from "./Navbar.js"
 import Avatar from "./Avatar.js"
 import Logo from "./Logo.js"
-import Settings from "./Settings.js"
+import Settings from "./BlockedPage.js"
 import About from "./About.js"
 import {
   BrowserRouter,
