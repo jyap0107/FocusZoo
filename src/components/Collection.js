@@ -4,21 +4,23 @@ import '../options.css'
 import CollectionModal from "./CollectionModal";
 
 function Collection() {
+
+  const [open, setOpen] = useState(false)
+
   return(
 
     <div className="flex w-full bg-stone justify-center content-center grow-0">
-      <CollectionModal></CollectionModal>
     <div id="collection" className="w-3/4 h-5/6 mt-10 2xl:mt-20 ">
     <div id="collection-content" className="flex flex-col self-center mx-5 h-full grow-0 w-full">
-      <div id="collection-header" className="flex flex-row justify-between">
+      <div id="collection-header" className="flex flex-row justify-between border-solid border-slate-200 border-b-2 pb-2">
         <div className="flex flex-col">
-          <div id="collection-title" className="font-sans font-bold text-3xl">Title</div>
-          <div id="collection-subtitle" className="font-sans text-base font-medium text-neutral-600">Subtitle</div>
+          <div id="collection-title" className="font-sans font-bold text-3xl">COLLECTION</div>
+          <div id="collection-subtitle" className="font-sans text-base font-medium text-neutral-600">All the animals you've collected so far (3/20)</div>
         </div>
         <div id="roll-button" className="font-sans font-bold text-base 2xl:text-xl border border-solid rounded-lg border-slate-500 h-fit py-2 px-2
-         hover:cursor-pointer hover:bg-slate-200">Click me</div>
-        </div>
-        <div id="collection-area" className="grid-cols-3 gap-0 h-full w-full grow-0 overflow-y-auto scrollbar-thumb-red-500 mt-10">
+         hover:cursor-pointer hover:bg-slate-200" onClick={() => setOpen(true)}>Get more animals</div>
+      </div>
+        <div id="collection-area" className="grid-cols-3 gap-0 h-full w-full grow-0 overflow-y-auto scrollbar-thumb-red-500 mt-8">
           <div className="flex flex-row w-full h-1/3">
             <div className="bg-yellow-300 w-1/3">A</div>
             <div className="bg-blue-300 w-1/3">A</div>
@@ -35,31 +37,9 @@ function Collection() {
             <div className="bg-green-300 w-1/3">A</div>
           </div>
         </div>
-      {/* <div id="collection-area" className="flex flex-col w-92 mt-10 h-full bg-red-400 overflow-y-auto grow-0 flex-nowrap">
-        <div className="flex flex-row w-full h-1/3">
-          <div className="bg-yellow-300 w-1/3">A</div>
-          <div className="bg-blue-300 w-1/3">A</div>
-          <div className="bg-orange-300 w-1/3">A</div>
-        </div>
-        <div className="flex flex-row  w-full h-1/3">
-          <div className="bg-blue-300 w-1/3">A</div>
-          <div className="bg-orange-300 w-1/3">A</div>
-          <div className="bg-green-300 w-1/3">A</div>
-        </div>
-        <div className="flex flex-row j w-full h-1/3">
-          <div className="bg-red-300 w-1/3">A</div>
-          <div className="bg-blue-300 w-1/3">A</div>
-          <div className="bg-orange-300 w-1/3">A</div>
-        </div>
-        <div className="flex flex-row  w-full h-1/3">
-          <div className="bg-red-300 w-1/3">A</div>
-          <div className="bg-blue-300 w-1/3">A</div>
-          <div className="bg-orange-300 w-1/3">A</div>
-        </div>
-      </div> */}
       </div>
     </div>
-    
+    <CollectionModal open={open} setOpen={setOpen}></CollectionModal>    
   </div>
   )
 }

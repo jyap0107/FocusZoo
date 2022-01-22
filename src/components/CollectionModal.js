@@ -4,14 +4,13 @@ import '../options.css'
 import { Dialog, Transition } from '@headlessui/react'
 import StarOutlineIcon from '@mui/icons-material/StarOutline';
 
-function CollectionModal() {
-  const [open, setOpen] = useState(true)
+function CollectionModal(props) {
 
   const cancelButtonRef = useRef(null)
 
   return (
-    <Transition.Root show={open} as={Fragment}>
-      <Dialog as="div" className="fixed z-10 inset-0 overflow-y-auto" initialFocus={cancelButtonRef} onClose={setOpen}>
+    <Transition.Root show={props.open} as={Fragment}>
+      <Dialog as="div" className="fixed z-10 inset-0 overflow-y-auto" initialFocus={cancelButtonRef} onClose={props.setOpen}>
         <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
           <Transition.Child
             as={Fragment}
@@ -60,7 +59,7 @@ function CollectionModal() {
                 <button
                   type="button"
                   className="w-1/4 inline-flex justify-center rounded-md px-4 py-2 bg-slate-200 text-lg font-medium text-slate-700 hover:bg-slate-300 focus:outline-none sm:ml-3 sm:text-sm border border-slate-500 border-solid"
-                  onClick={() => setOpen(false)}
+                  onClick={() => props.setOpen(false)}
                 >
                   <StarOutlineIcon fontSize="small"></StarOutlineIcon>
                   1000
@@ -68,7 +67,7 @@ function CollectionModal() {
                 <button
                   type="button"
                   className="w-1/4 inline-flex justify-center rounded-md px-4 py-2 bg-slate-200 text-lg font-medium text-slate-700 hover:bg-slate-300 focus:outline-none sm:ml-3 sm:text-sm border border-slate-500 border-solid"
-                  onClick={() => setOpen(false)}
+                  onClick={() => props.setOpen(false)}
                 >
                   <StarOutlineIcon fontSize="small"></StarOutlineIcon>
                   2000
@@ -76,7 +75,7 @@ function CollectionModal() {
                 <button
                   type="button"
                   className="w-1/4 inline-flex justify-center rounded-md px-4 py-2 bg-slate-200 text-lg font-medium text-slate-700 hover:bg-slate-300 focus:outline-none sm:ml-3 sm:text-sm border border-slate-500 border-solid"
-                  onClick={() => setOpen(false)}
+                  onClick={() => props.setOpen(false)}
                 >
                   <StarOutlineIcon fontSize="small"></StarOutlineIcon>
                   5000
@@ -84,7 +83,7 @@ function CollectionModal() {
                 <button
                   type="button"
                   className="w-1/4 inline-flex justify-center rounded-md px-4 py-2 bg-slate-200 text-lg font-medium text-slate-700 hover:bg-slate-300 focus:outline-none sm:ml-3 sm:text-sm border border-slate-500 border-solid"
-                  onClick={() => setOpen(false)}
+                  onClick={() => props.setOpen(false)}
                 >
                   <StarOutlineIcon fontSize="small"></StarOutlineIcon>
                   10000

@@ -10,8 +10,8 @@ function About() {
         <div id="header" className="flex flex-col ">
           <div id="title" className="font-sans font-bold text-3xl">ABOUT</div>
         </div>
-        <div id="subtitle" className="font-sans text-base font-medium text-neutral-600">Focus Zoo combines productivity with play, rewarding you for getting work done</div>
-        <div className="font-sans font-medium mt-10">
+        <div id="subtitle" className="font-sans text-base font-medium text-neutral-600 border-solid border-slate-200 border-b-2 pb-5">Focus Zoo combines productivity with play, rewarding you for getting work done</div>
+        <div className="font-sans font-medium mt-5">
           <div className="text-black text-lg">Set your own clock</div>
           <div className="text-neutral-600 text-sm">Modeled on the Pomodoro method, set your own work and break times for the timer.</div>
           <div className="text-black text-lg mt-4">Set your own blocked sites</div>

@@ -62,8 +62,8 @@ function Settings() {
         <div id="header" className="flex flex-col ">
           <div id="title" className="font-sans font-bold text-3xl">SETTINGS</div>
         </div>
-        <div id="subtitle" className="font-sans text-base font-medium text-neutral-600">Change how you interact with the extension</div>
-        <div className="flex flex-col font-sans font-medium mt-10 divide-solid divide-y divide-slate-200">
+        <div id="subtitle" className="font-sans text-base font-medium text-neutral-600 border-solid border-slate-200 border-b-2 pb-5">Change how you interact with the extension</div>
+        <div className="flex flex-col font-sans font-medium mt-5 divide-solid divide-y divide-slate-200">
           <div id="settings-1" className="flex flex-row justify-between pb-2">
             <div>
               <div className="text-black text-lg">Set work interval</div>

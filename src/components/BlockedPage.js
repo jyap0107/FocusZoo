@@ -126,7 +126,7 @@ function BlockedPage() {
       <div id="settings" className="w-3/4 h-5/6 mt-10 2xl:mt-20 max-h-5/6">
       <div id="settings-content" className="flex flex-col self-center mx-5 h-full max-h-max">
 
-        <div id="header" className="flex flex-row justify-between ">
+        <div id="header" className="flex flex-row justify-between border-solid border-slate-200 border-b-2 pb-5 ">
           <div id="left">
             <div id="title" className="font-sans font-bold text-3xl">BLOCKED SITES</div>
             <div id="subtitle" className="font-sans text-base font-medium text-neutral-600">Visiting these sites will stop point acquisition until you reset the timer</div>
@@ -154,7 +154,7 @@ function BlockedPage() {
           </div>
         </div>
 
-        <div id="block-site-add-list" className="flex flex-row mt-12 justify-between">
+        <div id="block-site-add-list" className="flex flex-row mt-5 justify-between">
           <div className="flex flex-row shrink-0 rounded-lg border-solid border-slate-300 border hover:cursor-pointer py-2 px-2 w-28 bg-white hover:bg-slate-100 active:bg-slate-200"
           onClick={() => addBlocked()}>
             <AddIcon></AddIcon>
