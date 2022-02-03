@@ -17,12 +17,14 @@
     "@headlessui/react": "^1.4.3",
     "@mui/icons-material": "^5.2.5",
     "@themesberg/flowbite": "^1.3.0",
+    "@tippyjs/react": "^4.2.6",
     "copy-webpack-plugin": "^10.2.0",
     "crx-hotreload": "^1.0.6",
     "psl": "^1.8.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
-    "react-router-dom": "^6.2.1"
+    "react-router-dom": "^6.2.1",
+    "tippy.js": "^6.3.7"
   },
   "devDependencies": {
     "@babel/core": "^7.16.7",

@@ -20,6 +20,13 @@
     ],
     "background": {
       "service_worker": "background.js"
-    }
+    },
+    "content_scripts": [
+      {
+        "matches": ["http://*/*", "https://*/*"],
+        "js": ["inject_foreground.js"],
+        "all_frames": false
+      }
+    ]
   }
   

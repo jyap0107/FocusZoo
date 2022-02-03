@@ -11,17 +11,19 @@ import {
   Route,
   Outlet,
   Navigate,
+  useLocation
 } from "react-router-dom";
 
 import '../options.css'
 
 
 function OptionsRouting() {
+
   return (
       <div id="options-comp" className="flex flex-row">
-        <div id="sidebar" className="flex flex-col bg-stone-50 min-h-screen max-h-screen w-52 xl:w-72 divide-solid divide-y divide-slate-200 drop-shadow-lg">
-        <Logo></Logo>
-        <Navbar></Navbar>
+        <div id="sidebar" className="flex flex-col shrink-0 bg-stone-50 min-h-screen max-h-screen w-48 2xl:w-64 divide-solid divide-y divide-slate-200 drop-shadow-lg">
+          <Logo></Logo>
+          <Navbar></Navbar>
         </div>
         <Outlet/>
         

@@ -15,22 +15,32 @@ import {
   Route,
   Outlet,
   Navigate,
+  useLocation
 } from "react-router-dom";
 
 import '../options.css'
-import '@themesberg/flowbite';
+
+
 
 
 function Options() {
+
+  
+
+
   return (
     <HashRouter>
       <Routes>
         <Route path="/" element={<OptionsRouting></OptionsRouting>}>
           {/* <div id="screen" className="flex w-full bg-stone justify-center content-center "> */}
-            <Route path="blocksites" element={<BlockedPage className="flex w-full bg-stone justify-center content-center "></BlockedPage>}></Route>
+            {/* {/* <Route index element={<Navigate replace to="collection"/>}></Route> */}
+            <Route path=""  element={<Navigate replace to="collection"/>}></Route>
+            {/* <Route path=""  element={<Collection className="flex w-full bg-stone justify-center content-center "></Collection>}></Route> */}
+            <Route path="blocksites" element={<BlockedPage className="flex bg-stone justify-center content-center "></BlockedPage>}></Route>
             <Route path="about" element={<About className="flex w-full bg-stone justify-center content-center "></About>}></Route>
             <Route path="collection" element={<Collection className="flex w-full bg-stone justify-center content-center "></Collection>}></Route>
             <Route path="settings" element={<Settings className="flex w-full bg-stone justify-center content-center "></Settings>}></Route>
+            
           {/* </div> */}
         </Route>
       </Routes>

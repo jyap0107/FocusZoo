@@ -29,16 +29,16 @@ function Settings() {
 
   const handleWorkTime = (e) => {
     var work = e.target.value;
-    work = work > 120 ? 120 : work;
-    work = work < 25 ? 25 : work;
+    // work = work > 120 ? 120 : work;
+    // work = work < 25 ? 25 : work;
     e.target.value = work
     setWorkTime(work)
     chrome.storage.sync.set({"workTime": work})
   }
   const handleBreakTime = (e) => {
     var brk = e.target.value;
-    brk = brk > 60 ? 60 : brk;
-    brk = brk < 5 ? 5 : brk;
+    // brk = brk > 60 ? 60 : brk;
+    // brk = brk < 5 ? 5 : brk;
     e.target.value = brk
     setBreakTime(brk)
     chrome.storage.sync.set({"breakTime": brk})
@@ -49,7 +49,6 @@ function Settings() {
     chrome.storage.sync.set({"blockAlert": temp})
   }
   port.onMessage.addListener(function(msg) {
-    console.log(msg.active)
     if (msg.active != undefined) {
       setActive(msg.active)
     }

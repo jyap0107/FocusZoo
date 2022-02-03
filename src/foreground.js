@@ -15,8 +15,10 @@ function Foreground() {
         alert("You've been idle for too long. You will stop receiving points until you click STOP.")
       }
       if (request.msg == "BLOCKED_SITE") {
+        console.log("alert")
         alert(`You're accessing a blocked site. You will stop receiving points until you click STOP.`)
       }
+      
     })
   return (
     <div>
@@ -24,4 +26,4 @@ function Foreground() {
       </div>
   )
 }
-render(<Foreground />, document.querySelector("#foreground"));
+render(<Foreground />, document.querySelector("#foreground_12345"));

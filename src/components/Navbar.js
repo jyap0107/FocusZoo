@@ -18,7 +18,9 @@ import {
 
 function Navbar() {
   var port = chrome.runtime.connect({name: "navbar"});
+
   const [points, setPoints] = useState();
+
   useEffect(() => {
     chrome.storage.sync.get("points", (data) => {
       setPoints(data.points)
@@ -26,7 +28,6 @@ function Navbar() {
   },[])
 
   port.onMessage.addListener(function(msg) {
-    console.log("navbar received")
     if (msg.points != undefined) {
       setPoints(msg.points);
     }

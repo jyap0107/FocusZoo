@@ -9,12 +9,10 @@ fontFamily['sans'] = [
 
 module.exports = {
   // purge: [],
-  content: ['src/components/*', 'src/popup.js', `./node_modules/@themesberg/flowbite/**/*.js`],
+  content: ['src/components/*', 'src/popup.js'],
   theme: {
     fontFamily: fontFamily,
     extend: {},
   },
-  plugins: [
-    require('@themesberg/flowbite/plugin')
-  ]
+  plugins: []
 }

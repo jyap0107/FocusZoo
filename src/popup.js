@@ -17,11 +17,13 @@ function Popup() {
   const [points, setPoints] = useState();
   const [sessionTime, setSessionTime] = useState();
   const [timerMode, setTimerMode] = useState();
+  const [disabled, setDisabled] = useState(false);
 
   useEffect(() => {
     setPoints(total)
     port.postMessage({cmd: "GET_TIMES"});
     port.postMessage({cmd: "GET_MODE"})
+    port.postMessage({cmd: "GET_DISABLED"})
   }, [total])
    const toggleTimer = () => {
     if (button == "Start") startTimer();
@@ -37,7 +39,6 @@ function Popup() {
   }
   port.onMessage.addListener(function(msg) {
     if (msg.countdown != undefined) {
-      console.log("Countdown received " + msg.countdown)
       setCountdown(msg.countdown);
     }
     if (msg.points != undefined)
@@ -51,7 +52,10 @@ function Popup() {
     if (msg.timerMode != undefined) {
       setTimerMode(msg.timerMode)
     }
-  
+    if (msg.disabled != undefined) {
+      console.log("faskfjkasdlf")
+      setDisabled(msg.disabled)
+    }
     return true;
     // console.log(msg.points);
   })
@@ -64,7 +68,12 @@ function Popup() {
       <div id="popup-image" className="flex self-center mt-5">
         <img id="popup-img" src={chrome.runtime.getURL('placeholder.png')}></img>
       </div>
-      <div id="popup-mode" className="italic self-center mt-1">{timerMode}</div>
+      {disabled ? 
+        <div id="popup-mode" className="italic self-center mt-1">{timerMode}
+          <span> - </span><span className="font-semibold text-red-500">DISABLED</span>
+        </div> :
+        <div id="popup-mode" className="italic self-center mt-1">{timerMode}</div>}
+      
       <div id="countdown-timer" className="self-center text-4xl">{countdown}</div>
       <div id="popup-footer" className="flex flex-row justify-evenly self-center w-full text-xl mt-2 shrink-0 grow-0 resize-none">
         <div id="start-end-button" className="flex footer-item w-20 py-2 px-4 border border-black border-solid justify-center hover:cursor-pointer hover:bg-blue-50 align-middle" onClick={() => toggleTimer()}>{button}</div>
