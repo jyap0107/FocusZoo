@@ -47,7 +47,7 @@ function AnimalModal(props) {
                     <Dialog.Title as="h3" className="text-lg leading-6 font-medium text-gray-900">
                       Animal Name
                     </Dialog.Title>
-                    <img src={chrome.runtime.getURL('card3.png')} className="object-contain h-full w-full hover:cursor-pointer"></img>
+                    <img src={chrome.runtime.getURL('Panda.jpg')} className="object-contain h-full w-full hover:cursor-pointer"></img>
                   </div>
                 </div>
               </div>

@@ -36,21 +36,26 @@ function Collection() {
          hover:cursor-pointer hover:bg-slate-200" onClick={() => setOpen(true)}>Get more animals</div>
       </div>
         {/* <div id="collection-area" className="grid-cols-3 gap-0 md:h-[435px] md:w-[800px] 2xl:h-[735px] 2xl:w-[1250px] grow-0 overflow-y-auto scrollbar-thumb-red-500 mt-8"> */}
-        <div id="collection-area" className="grid-cols-3 gap-0 h-[435px] w-[800px] 2xl:h-full 2xl:w-full grow-0 overflow-y-auto scrollbar-thumb-red-500 mt-8">
-          <div className="flex flex-row h-[145px] 2xl:h-1/3">
-            <div className="flex bg-yellow-300 w-[415px] 2xl:w-1/3"><AnimalCard></AnimalCard></div>
-            <div className="flex md:bg-red-300 lg:bg-yellow-300 xl:bg-green-300 2xl:bg-blue-300 w-[415px] 2xl:w-1/3 justify-center">A</div>
-            <div className="flex bg-orange-300 w-[415px] 2xl:w-1/3 justify-center">B</div>
+        <div id="collection-area" className="grid-cols-3 gap-0 h-[435px] w-[800px] 2xl:h-[735px] 2xl:w-full grow-0 overflow-y-auto scrollbar-thumb-red-500 mt-8">
+          <div className="flex flex-row h-[145px] 2xl:h-[245px]">
+            <div className="flex w-[415px] 2xl:w-1/3 justify-center"><AnimalCard></AnimalCard></div>
+            <div className="flex w-[415px] 2xl:w-1/3 justify-center"><AnimalCard></AnimalCard></div>
+            <div className="flex w-[415px] 2xl:w-1/3 justify-center"><AnimalCard></AnimalCard></div>
           </div>
           <div className="flex flex-row h-[145px] 2xl:h-[245px]">
-            <div className="flex bg-red-300 w-[415px] justify-center 2xl:w-1/3">B</div>
-            <div className="flex bg-blue-300 w-[415px] justify-center 2xl:w-1/3">B</div>
-            <div className="flex bg-orange-300 w-[415px] justify-center 2xl:w-1/3">B</div>
+            <div className="flex w-[415px] justify-center 2xl:w-1/3"><AnimalCard></AnimalCard></div>
+            <div className="flex w-[415px] justify-center 2xl:w-1/3"><AnimalCard></AnimalCard></div>
+            <div className="flex w-[415px] justify-center 2xl:w-1/3"><AnimalCard></AnimalCard></div>
           </div>
           <div className="flex flex-row h-[145px] 2xl:h-[245px] ">
-            <div className="flex bg-blue-300 w-[415px] justify-center 2xl:w-1/3">C</div>
-            <div className="flex bg-orange-300 w-[415px] justify-center 2xl:w-1/3">C</div>
-            <div className="flex bg-green-300 w-[415px] justify-center 2xl:w-1/3">C</div>
+            <div className="flex w-[415px] justify-center 2xl:w-1/3"><AnimalCard></AnimalCard></div>
+            <div className="flex w-[415px] justify-center 2xl:w-1/3"><AnimalCard></AnimalCard></div>
+            <div className="flex w-[415px] justify-center 2xl:w-1/3"><AnimalCard></AnimalCard></div>
+          </div>
+          <div className="flex flex-row h-[145px] 2xl:h-[245px] ">
+            <div className="flex w-[415px] justify-center 2xl:w-1/3"><AnimalCard></AnimalCard></div>
+            <div className="flex w-[415px] justify-center 2xl:w-1/3"><AnimalCard></AnimalCard></div>
+            <div className="flex w-[415px] justify-center 2xl:w-1/3"><AnimalCard></AnimalCard></div>
           </div>
         </div>
       </div>
@@ -60,6 +65,7 @@ function Collection() {
   </div>
   )
 }
+
 export default Collection;
 
 /*<div className="flex w-full bg-stone justify-center content-center">
